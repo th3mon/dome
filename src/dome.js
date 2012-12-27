@@ -34,17 +34,27 @@ window.dome = (function () {
     };
 
     // ========== DOM MANIPULATION ==========
-    Dome.prototype.text = function (text) {
-        if (typeof text !== "undefined") {
-            return this.forEach(function (el) {
-                el.innerText = text;
-            });
-        } else {
-            return this.mapOne(function (el) {
-                return el.innerText;
-            });
+    Dome.prototype.text = (function (d){
+        var key;
+
+        if (d.body.textContent) {
+            key = "textContent";
+        } else if (d.body.innerText) {
+            key = "innerText";
         }
-    };
+
+        return function(text) {
+            if (typeof text !== "undefined") {
+                return this.forEach(function(el) {
+                    el[key] = text;
+                });
+            } else {
+                return this.mapOne(function(el) {
+                    return el[key];
+                });
+            }
+        };
+    }(document));
 
     Dome.prototype.html = function (html) {
         if (typeof html !== "undefined") {
